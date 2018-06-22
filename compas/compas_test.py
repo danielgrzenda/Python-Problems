@@ -1,7 +1,8 @@
 import subprocess
 import glob
+
 class TestFailed(BaseException):
-    def __new__(self, m):
+    def __init__(self, m):
         self.message = m
     def __str__(self):
         return self.message
@@ -13,14 +14,15 @@ def get_answer(file):
     return int(answ)
 
 def test_input(input, answer):
-    line = "python lazy_crypto.py < %s" %input
+    line = "python compas.py < %s" %input
     try:
         p = subprocess.Popen(line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        ans = int(p.stdout.read()) #if not int it breaks
+        out = p.stdout.read()
+        ans = int(out) #if not int it breaks
     except Exception as e:
-        raise TestFailed("Fail: Execution error")
+        raise TestFailed("FAILE: Execution error")
     print("[" + input + "]: " + ("PASS" if answer == ans else "FAIL"))
-    
+
 files = glob.glob("*.in")
 files.sort()
 for test in files:
